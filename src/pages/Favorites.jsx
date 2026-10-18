@@ -1,8 +1,16 @@
+import { useState } from 'react';
 import MovieGrid from '../components/MovieGrid';
+import { getFavorites } from '../services/favoritesService';
 
 function Favorites() {
-  // Placeholder - students will implement localStorage retrieval
-  const favoriteMovies = [];
+  // Load saved favorites once when the page first renders
+  const [favoriteMovies, setFavoriteMovies] = useState(() => getFavorites());
+
+  // MovieCard calls this after a favorite is added or removed,
+  // so we re-read storage and the grid updates immediately
+  const handleFavoriteChange = () => {
+    setFavoriteMovies(getFavorites());
+  };
 
   return (
     <main className="main-content">
@@ -11,7 +19,10 @@ function Favorites() {
         <p>Your saved movies collection</p>
       </div>
       {favoriteMovies.length > 0 ? (
-        <MovieGrid movies={favoriteMovies} />
+        <MovieGrid
+          movies={favoriteMovies}
+          onFavoriteChange={handleFavoriteChange}
+        />
       ) : (
         <div className="empty-state">
           <p>No favorite movies yet. Start adding some from the home page!</p>
